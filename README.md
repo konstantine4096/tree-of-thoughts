@@ -29,9 +29,9 @@ If you prefer to use your OpenAI key instead and work only with OpenAI models, y
 
 ## Replicating the Experiments
 
- - To run Long's ToT code on a given file of Sudoku puzzles: `python3 main <text-file>`
+ - To run Long's ToT code on a given file of Sudoku puzzles: `python3 main.py <text-file>`
  - To run "P+" (aka the "binomial" LLM algorithm) on a text file of Sudoku puzzles, do:
- `python3 main binomial-sudoku <text-file> <grid-dim> {<max_attempts>} {<temp>}`
+ `python3 main.py binomial-sudoku <text-file> <grid-dim> {<max_attempts>} {<temp>}`
  The `<text-file>` argument is the name of the text file containing the puzzles. The rest of the arguments are numeric: `<grid-dim>` is the dimension of the grid (4 or 9); `<max-attempts>` is the maximum number of repetitions; and `<temp>` is the temperature. The last two arguments are optional. The default maximum number of attempts is 100. If no temperature is specified, a random value between 0 and 1 is used. 
- - To run P+ on a text file of games of 24, do: `python3 main binomial-24 <text-file> {max_attempts} {temp}`. The `<max-attempts>` and `<temp>` arguments are again optional, with the same defaults as specified above.
+ - To run P+ on a text file of games of 24, do: `python3 main.py binomial-24 <text-file> {max_attempts} {temp}`. The `<max-attempts>` and `<temp>` arguments are again optional, with the same defaults as specified above.
 
