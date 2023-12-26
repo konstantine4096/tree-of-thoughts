@@ -2,7 +2,7 @@
 
 This repo is built on top of a copy of [Jieyi Long's ToT repo](https://github.com/jieyilong/tree-of-thought-puzzle-solver). As described below in more detail, this repo contains:
 
- 1. an implementation of classical AI search algorithms and a formulation of Sudoku and the game of 24 as search problems;
+ 1. a new implementation of classical AI search algorithms and a formulation of Sudoku and the game of 24 as search problems;
  2. two new Sudoku puzzle datasets (consisting of 100 4x4 puzzles and 100 easy 9x9 puzzles);
  3.  logs/results from running Long's ToT algorithm on these new datasets;
  4.  logs/results from running a naive "binomial" algorithm on both of the above datasets;
