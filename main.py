@@ -24,7 +24,7 @@ def make_game_of_24_prompt(int_line):
     prompt += 'First intermediate equation: 8 + 12. This gives a result of 20. Thus, the available numbers now are 6, 5, and 20.\n'
     prompt += 'Second intermediate equation: 20 / 5. This gives a result of 4. Thus, the available numbers now are 6 and 4.\n'
     prompt += 'Third  intermediate equation: 6 * 4. This gives the desired result of 24.\n'
-    prompt += 'Thus, putting it all together, the output expression is: (8 + 12) * (20 / 5). '
+    prompt += 'Thus, putting it all together, the output expression is: ((8 + 12) / 5) * 6. '
     prompt += 'This expression is a solution because its value is 24 and it uses every given integer exactly once.\n'
     prompt += 'Now please try to solve the puzzle where the four given integers are these: ' + s + '.\n'
     prompt += 'Take a deep breath and think this out step-by-step, explaining your reasoning along the way.\n'
