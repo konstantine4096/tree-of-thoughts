@@ -9,6 +9,7 @@ import random
 from sudoku import *
 import ast
 import re
+import numpy as np
 import argparse
 
 #====================================================== GAME OF 24: 
@@ -24,7 +25,7 @@ def make_game_of_24_prompt(int_line):
     prompt += 'First intermediate equation: 8 + 12. This gives a result of 20. Thus, the available numbers now are 6, 5, and 20.\n'
     prompt += 'Second intermediate equation: 20 / 5. This gives a result of 4. Thus, the available numbers now are 6 and 4.\n'
     prompt += 'Third  intermediate equation: 6 * 4. This gives the desired result of 24.\n'
-    prompt += 'Thus, putting it all together, the output expression is: (8 + 12) * (20 / 5). '
+    prompt += 'Thus, putting it all together, the output expression is: ((8 + 12) / 5) * 6. '
     prompt += 'This expression is a solution because its value is 24 and it uses every given integer exactly once.\n'
     prompt += 'Now please try to solve the puzzle where the four given integers are these: ' + s + '.\n'
     prompt += 'Take a deep breath and think this out step-by-step, explaining your reasoning along the way.\n'
@@ -32,9 +33,12 @@ def make_game_of_24_prompt(int_line):
     return prompt
 
 def all_four_integers(exp,puzzle_string):
+    pattern = re.compile(r'(^|\(|\+|\-|\*|\/)\s*-\d+')
+    def unary_minus(e):
+        return pattern.search(e) is not None 
     ints = [i.strip() for i in puzzle_string.split(' ')] 
     exp_toks = common.utils.tokenize(exp,"+*()/-")
-    return len(exp_toks) == 4 and set(exp_toks) == set(ints)
+    return len(exp_toks) == 4 and not(unary_minus(exp)) and list(sorted(exp_toks)) == list(sorted(ints))
     
 def solve_puzzle_of_24_with_single_prompt(puzzle_string,temp=1.0):
     prompt = make_game_of_24_prompt(puzzle_string)
@@ -154,8 +158,9 @@ def solve_sudoku_puzzle_with_single_prompt(puzzle_string,grid_dimension=9,temp=1
         print("Could not extract a proper JSON object from this LLM reply: " + llm_reply,flush=True)
         return (False, prompt,llm_reply,'formatting error')
 
-def solve_sudoku_puzzle_with_independent_iterations(puzzle_string,grid_dimension=9,attempt_count=100,temp=1.0):
+def solve_sudoku_puzzle_with_independent_iterations(puzzle_string,grid_dimension=9,attempt_count=100,given_temp=1.0):
     for i in range(1,attempt_count+1):
+        temp = given_temp if given_temp >= 0.0 else np.random.uniform(0.0,1.0)
         print("\n[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[\nAttempt #" + str(i) + \
               " with temp: " + str(temp) + " to solve this puzzle: " + puzzle_string,flush=True)
         (success,prompt,llm_reply,reason) = solve_sudoku_puzzle_with_single_prompt(puzzle_string,
@@ -189,7 +194,7 @@ def solve_sudoku_puzzle_with_independent_iterations_batch(file_name,
         solve_sudoku_puzzle_with_independent_iterations(l,
                                                         grid_dimension=grid_dimension,
                                                         attempt_count=attempt_count,
-                                                        temp=temp)
+                                                        given_temp=temp)
               
 def solve_sudoku_puzzle_batch(puzzle_file):
     lines = [l.strip() for l in common.utils.readFile(puzzle_file).split("\n") if l]
@@ -228,7 +233,7 @@ if __name__ == "__main__":
             attempt_count = int(sys.argv[4])
         except:
             pass
-        temp = random.random()
+        temp = -1.0
         try:
             temp = float(sys.argv[5])
         except:
